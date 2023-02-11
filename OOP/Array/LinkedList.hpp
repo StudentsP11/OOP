@@ -65,22 +65,46 @@ public:
 		size_++;
 	}
 
-	T& operator[](size_t index) {
-		NodePtr selected {&first_node_};
-
-		for (size_t i = 0; i < index; i++)
-		{
-			if (selected == nullptr)
-				throw std::out_of_range(
-					"index is out of boundaries"
-				);
-			selected = selected->next;
+	void pop(size_t index)
+	{
+		size_--;
+		if (index == 0) {
+			first_node_ = std::move(*first_node_.next);
+			return;
 		}
 
-		return selected->value;
+		NodePtr previous = this->get(index - 1);
+
+		if (index == size_)
+		{
+			delete previous->next;
+			last_node_ = previous;
+			return;
+		}
+
+		const NodePtr to_delete = previous->next;
+		previous->next = previous->next->next;
+		delete to_delete;
+	}
+
+	T& operator[](size_t index) {
+		return get(index)->value;
 	}
 
 	const T& operator[](size_t index) const {
+		return get(index)->value;
+	}
+
+	[[nodiscard]] const size_t& size() const
+	{
+		return size_;
+	}
+private:
+	Node first_node_;
+	NodePtr last_node_{&first_node_};
+	size_t size_;
+
+	NodePtr get(size_t index) {
 		NodePtr selected{ &first_node_ };
 
 		for (size_t i = 0; i < index; i++)
@@ -92,17 +116,8 @@ public:
 			selected = selected->next;
 		}
 
-		return selected->value;
+		return selected;
 	}
-
-	[[nodiscard]] const size_t& size() const
-	{
-		return size_;
-	}
-private:
-	Node first_node_;
-	NodePtr last_node_{&first_node_};
-	size_t size_;
 };
 
 template <typename T>
