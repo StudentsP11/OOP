@@ -65,6 +65,18 @@ public:
 		size_++;
 	}
 
+	void insert(size_t index, T value)
+	{
+		NodePtr current = get(index);
+		*current = Node(
+				value, 
+				new Node(*current)
+		);
+		size_++;
+		if (current == last_node_)
+			last_node_ = last_node_->next;
+	}
+
 	void pop(size_t index)
 	{
 		size_--;
@@ -73,7 +85,7 @@ public:
 			return;
 		}
 
-		NodePtr previous = this->get(index - 1);
+		NodePtr previous = get(index - 1);
 
 		if (index == size_)
 		{
