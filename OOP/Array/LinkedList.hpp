@@ -30,6 +30,9 @@ public:
 		}
 	};
 
+	LinkedList(LinkedList&& another) noexcept = default;
+	LinkedList& operator=(LinkedList&& another) noexcept = default;
+
 	LinkedList(std::initializer_list<T> list)
 		: first_node_(0),
 		last_node_(&first_node_),
@@ -62,7 +65,7 @@ public:
 	{
 		last_node_->next = new Node(std::move(value));
 		last_node_ = last_node_->next;
-		size_++;
+		++size_;
 	}
 
 	void insert(size_t index, T value)
@@ -111,6 +114,12 @@ public:
 	{
 		return size_;
 	}
+
+	template <typename U>
+	friend std::ostream& operator<<(
+		std::ostream& in,
+		LinkedList<U>& list
+		);
 private:
 	Node first_node_;
 	NodePtr last_node_{&first_node_};
@@ -133,39 +142,39 @@ private:
 };
 
 template <typename T>
-struct Node
+std::ostream& operator<<(
+	std::ostream& in,
+	LinkedList<T>& list
+	)
 {
-	T value;
+	using NodePtr = typename LinkedList<T>::Node const*;
 
-	Node* next = nullptr;
-};
+    NodePtr current = &list.first_node_;
 
-template <typename T>
-void print_list(const Node<T>& list)
-{
-	Node<T> const* current = &list;
-
-	while (current != nullptr)
+	while (current->next != nullptr)
 	{
-		std::cout << current->value;
+		in << current->value << " -> ";
 		current = current->next;
 	}
+	in << current->value << '\n';
+
+	return in;
 }
 
-template <typename T>
-bool is_looped_list(const Node<T>& list)
-{
-	Node<T> const* faster = &list;
-	Node<T> const* slower = &list;
-	do {
-		if (faster->next == nullptr
-			|| faster->next->next == nullptr)
-			return false;
-		faster = faster->next->next;
-		slower = slower->next;
-	} while (faster != slower);
-
-	return true;
-}
+//template <typename T>
+//bool is_looped_list(const Node<T>& list)
+//{
+//	Node<T> const* faster = &list;
+//	Node<T> const* slower = &list;
+//	do {
+//		if (faster->next == nullptr
+//			|| faster->next->next == nullptr)
+//			return false;
+//		faster = faster->next->next;
+//		slower = slower->next;
+//	} while (faster != slower);
+//
+//	return true;
+//}
 
 #endif
