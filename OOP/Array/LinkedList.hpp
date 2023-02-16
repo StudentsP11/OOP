@@ -73,7 +73,7 @@ public:
 		NodePtr current = get(index);
 		*current = Node(
 				value, 
-				new Node(*current)
+				new Node(std::move(*current))
 		);
 		size_++;
 		if (current == last_node_)
