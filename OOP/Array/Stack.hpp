@@ -4,39 +4,46 @@
 #include "DynamicArray.hpp"
 
 template <typename T>
-class Stack
+class Stack :
+	DynamicArray<T>,
+	IPushable<T>,
+	IPopable<T>
 {
 public:
+	using DArray = DynamicArray<T>;
+
 	Stack(std::initializer_list<T> list)
-		: array_(list)
+		: DArray(list)
 	{}
 
-	void push(T element)
+	Stack(DArray array)
+		: DArray(std::move(array))
+	{}
+
+	void push(T element) override
 	{
-		array_.append(std::move(element));
+		DArray::append(std::move(element));
 	}
 
-	T pop()
+	T pop() override
 	{
-		const size_t last_index = array_.size() - 1;
-		T element = std::move(array_[last_index]);
+		const size_t last_index = DArray::size() - 1;
+		T element = std::move((*this)[last_index]);
 
-		array_.pop(last_index);
+		DArray::pop(last_index);
 
 		return element;
 	}
 
 	bool is_empty() const
 	{
-		return array_.is_empty();
+		return DArray::is_empty();
 	}
 
 	const T& last() const
 	{
-		return array_[array_.size() - 1];
+		return (*this)[DArray::size() - 1];
 	}
-private:
-	DynamicArray<T> array_;
 };
 
 #endif

@@ -2,28 +2,30 @@
 #define DYNAMICARRAY_H
 
 #include "Array.hpp"
+#include "ISequence.hpp"
 
 template <typename T>
-class DynamicArray 
+class DynamicArray
+	: public Array<T>,
+	public IIndexedPopable<T>
 {
 public:
 	DynamicArray(Array<T> array)
-		: size_(array.size()), array_(std::move(array))
+		: Array<T>(std::move(array)), size_(capacity())
 	{
 		if (capacity() == 0)
-			reallocate(Array{ 0 });
+			*this = Array{0};
 	}
 
 	DynamicArray(std::initializer_list<T> list)
-		: size_(list.size()), array_(list)
-	{
-		if (capacity() == 0)
-			reallocate(Array{ 0 });
-	}
+		: DynamicArray(Array<T>(list))
+	{}
 
 	void reallocate(size_t new_size)
 	{
-		array_ = std::move(Array<T>(array_, new_size));
+		const size_t size = size_;
+		*this = std::move(Array<T>(*this, new_size));
+		size_ = size;
 	}
 
 	void free_extra_memory()
@@ -39,17 +41,33 @@ public:
 			reallocate(capacity()*2);
 		}
 
-		array_[size_] = std::move(element);
+		(*this)[size_] = std::move(element);
 		size_++;
 	}
 
-	void pop(const size_t index)
+	T& operator[](size_t index) override
+	{
+		if (index >= size_)
+			throw std::out_of_range("Index is out of range");
+		return Array<T>::operator[](index);
+	}
+
+	const T& operator[](size_t index) const override
+	{
+		if (index >= size_)
+			throw std::out_of_range("Index is out of range");
+		return Array<T>::operator[](index);
+	}
+
+	T pop(size_t index) override
 	{
 		for (size_t i = index+1; i < size_; i++)
 		{
-			array_[i - 1] = array_[i];
+			(*this)[i - 1] = (*this)[i];
 		}
 		size_--;
+
+		return (*this)[size_];
 	}
 
 	void clear()
@@ -57,62 +75,22 @@ public:
 		size_ = 0;
 	}
 
-	T& operator[](size_t index)
-	{
-		if (index >= size_)
-			throw std::out_of_range("index is out of range");
-		return array_[index];
-	}
-
-	const T& operator[](size_t index) const
-	{
-		return array_[index];
-	}
-
 	const size_t& capacity() const
 	{
-		return array_.size();
+		return Array<T>::size();
 	}
 
-	const size_t& size() const
+	const size_t& size() const override
 	{
 		return size_;
 	}
 
-	const bool is_empty() const
+	bool is_empty() const
 	{
 		return size_ == 0;
 	}
-
-	template <class U>
-	friend std::ostream& operator<<(
-		std::ostream& out,
-		const DynamicArray<U>& array);
 private:
 	size_t size_;
-	Array<T> array_;
-
-	void reallocate(Array<T> new_array)
-	{
-		array_ = std::move(new_array);
-	}
 };
-
-template <typename T>
-std::ostream& operator<<(
-	std::ostream& out,
-	const DynamicArray<T>& array)
-{
-	out << '[';
-	if (array.size_ > 0)
-	{
-		for (size_t i = 0; i < array.size_ - 1; i++)
-			out << array.array_[i] << ", ";
-		out << array.array_[array.size_ - 1];
-	}
-	out << "]\n";
-
-	return out;
-}
 
 #endif

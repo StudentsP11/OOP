@@ -4,8 +4,10 @@
 #include <algorithm>
 #include <optional>
 
+#include "ISequence.hpp"
+
 template <typename T>
-class Array
+class Array : public ISequence<T>
 {
 public:
 	Array(std::initializer_list<T> list)
@@ -74,19 +76,19 @@ public:
 		return *this;
 	}
 
-	~Array()
+	~Array() override
 	{
 		delete[] pointer_;
 	}
 
-	T& operator[](size_t index)
+	T& operator[](size_t index) override
 	{
 		if (index >= size_)
 			throw std::out_of_range("Index is out of range");
 		return pointer_[index];
 	}
 
-	const T& operator[](size_t index) const
+	const T& operator[](size_t index) const override
 	{
 		if (index >= size_)
 			throw std::out_of_range("Index is out of range");
@@ -94,15 +96,10 @@ public:
 	}
 
 	// getter / accessor
-	const size_t& size() const
+	const size_t& size() const override
 	{
 		return size_;
 	}
-
-	template <class U>
-	friend std::ostream& operator<<(
-		std::ostream& out, 
-		const Array<U>& array);
 private:
 	size_t size_;
 	T* pointer_;
@@ -115,24 +112,4 @@ private:
 			pointer_[i] = array[i];
 	}
 };
-
-template <typename T>
-std::ostream& operator<<(
-	std::ostream& out, 
-	const Array<T>& array)
-{
-	out << '[';
-	if (array.size_ > 0)
-	{
-		for (size_t i = 0; i < array.size_-1; i++)
-		out << array.pointer_[i] << ", ";
-		out << array.pointer_[array.size_-1];
-	}
-	out << "]\n";
-
-	return out;
-}
-
-
-
 #endif
