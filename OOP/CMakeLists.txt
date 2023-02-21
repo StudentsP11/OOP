@@ -1,4 +1,4 @@
-﻿add_executable (OOP "OOP.cpp"  "User.hpp" "User.cpp"     "Array/LinkedList.hpp")
+﻿add_executable (OOP "OOP.cpp"  "User.hpp" "User.cpp"     "Array/LinkedList.hpp" "Array/Pets.h")
 
 include_directories("Fraction")
 include_directories("Array")

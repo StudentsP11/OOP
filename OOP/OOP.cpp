@@ -4,21 +4,20 @@
 #include <Array.hpp>
 #include <DynamicArray.hpp>
 #include <Stack.hpp>
+#include <Pets.h>
 
 using std::string;
 
 int main()
 {
-	auto arr1 = 
-		std::make_unique<Array<int>>(Array{ 1,2,3 });
-	
-	std::unique_ptr<ISequence<int>> ref = std::move(arr1);
+    Economist economist;
+    Worker& worker = economist;
+    worker.work();
+	//Pet pet = new Turtle{1,2};
 
-	std::cout << *ref;
+    //pet->grow();
 
-	auto stack = std::make_unique<Stack<int>>(Stack{ 1,2,3 });
+    //std::cout << ((Turtle*)pet)->shell_thickness_;
 
-	std::cout << stack->pop();
-
-	return 0;
+    return 0;
 }

@@ -115,13 +115,13 @@ public:
 		return size_;
 	}
 
-	template <typename U>
-	friend std::ostream& operator<<(
-		std::ostream& in,
-		LinkedList<U>& list
-		);
+    template <typename U>
+    friend std::ostream& operator<<(
+            std::ostream& in,
+            LinkedList<U>& list
+    );
 private:
-	Node first_node_;
+    Node first_node_;
 	NodePtr last_node_{&first_node_};
 	size_t size_;
 
