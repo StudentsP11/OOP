@@ -11,7 +11,7 @@ class Dictionary
     using iterator = dict_type::iterator;
     using const_iterator = dict_type::const_iterator;
 public:
-    Dictionary(dict_type base)
+    Dictionary(std::initializer_list<dict_type::value_type> base)
             : words_(std::move(base))
     {}
 
