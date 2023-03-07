@@ -95,6 +95,16 @@ public:
 		return pointer_[index];
 	}
 
+	T* begin() const
+	{
+		return pointer_;
+	}
+
+	virtual T* end() const
+	{
+		return pointer_+size_;
+	}
+
 	// getter / accessor
 	const size_t& size() const override
 	{

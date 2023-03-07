@@ -17,10 +17,8 @@ protected:
 class Dog : public Pet {
 public:
     Dog(uint16_t volume, uint16_t fur_length)
-        : Pet(volume), fur_length_{fur_length}
-    {
-        volume_;
-    }
+        : Pet(volume), fur_length_(fur_length)
+    {}
 
     void grow() final {
         volume_ *= 2;

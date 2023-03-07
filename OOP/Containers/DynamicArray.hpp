@@ -89,6 +89,11 @@ public:
 	{
 		return size_ == 0;
 	}
+
+	T* end() const override
+	{
+		return Array<T>::begin() + size_;
+	}
 private:
 	size_t size_;
 };
