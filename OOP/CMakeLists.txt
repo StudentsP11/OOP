@@ -1,4 +1,4 @@
-﻿add_executable (OOP "OOP.cpp"  "User.hpp" "User.cpp")
+﻿add_executable (OOP "OOP.cpp" "User.hpp" "User.cpp")
 
 include_directories("Fraction")
 include_directories("Containers")
